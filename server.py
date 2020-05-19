@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return redirect("https://accounts.spotify.com/authorize?client_id=7191b80ce0364e7e96e282f04131013c&response_type=code&redirect_uri=https://woolsa01.pythonanywhere.com/callback&scope=user-read-private user-top-read")
+    return redirect("https://accounts.spotify.com/authorize?client_id=7191b80ce0364e7e96e282f04131013c&response_type=code&redirect_uri=https://swoollums.github.io/spotibook/callback&scope=user-read-private user-top-read")
 
 
 @app.route("/callback")
@@ -16,7 +16,7 @@ def callback():
     code_payload = {
         "grant_type": "authorization_code",
         "code": str(auth_token),
-        "redirect_uri": "https://woolsa01.pythonanywhere.com/callback"
+        "redirect_uri": "https://swoollums.github.io/spotibook/callback"
     }
     base64encoded = base64.b64encode(("7191b80ce0364e7e96e282f04131013c:1ae0231f8bc14553ad736266be5aae80").encode())
     headers = {"Authorization": "Basic {}".format(base64encoded.decode())}
