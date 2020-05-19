@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Shopibook</title>
+        <meta charset="UTF-8">
+        <link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css>
+    </head>
+    <body>
+        <script>
+        function statusChangeCallback(response) {
+    console.log('statusChangeCallback');
+    console.log(response);
+    if (response.status === 'connected') {
+        var uid = response.authResponse.userID;
+        var accessToken = response.authResponse.accessToken;
+        testAPI()
+    } else {
+    document.getElementById('status').innerHTML = 'Please log ' +
+        'into this app.';
+    }
+}
+
+function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+    statusChangeCallback(response);
+    });
+}
+
+window.fbAsyncInit = function() {
+    FB.init({
+    appId      : '2081171995475522',
+    cookie     : true,
+    xfbml      : true,
+    version    : 'v2.8'
+    });
+
+    FB.getLoginStatus(function(response) {
+    statusChangeCallback(response);
+    });
+
+};
+
+(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+function post() {
+    var message = ""
+    for (let i = 0; i < 3; i++) {
+        message += i+1 + "). " + document.getElementsByTagName('li')[i].innerText + "\n"
+    }
+    console.log("Posting...")
+    FB.api("/me/feed","POST",{"message": "My Top 3 Songs on Spotify: \n" + message,"link": "https://woolsa01.pythonanywhere.com"},
+        function (response) {
+        if (response && !response.error) {
+            console.log("Posted!")
+        }
+        else {
+            console.log("Could not post")
+        }
+    }
+    );
+}
+
+function testAPI() {
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', function(response) {
+        console.log('Successful login for: ' + response.name);
+        x = document.getElementById("fbbtn")
+        x.style.display = "none";
+        var j = document.getElementById("postbtn");
+        j.style.display = "block";
+        document.getElementById('status').innerHTML =
+        'Thanks for logging in, ' + response.name + '!';
+    });
+}
+        </script>
+        <div class=container>
+            <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="https://woolsa01.pythonanywhere.com">Spotibook</a>
+                </div>
+            </div>
+            </nav>
+            <div class="panel panel-default col-md-12">
+                <div class="panel-body">
+                    <div class="row form-inline">
+                        <div class="form-group">
+                            <h4>Your Top Songs on Spotify:</h4>
+                            <hr>
+                            <ol>
+                            {% for item in sorted_array%}
+                            <li> {{ item }} </li>
+                            {% endfor %}
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id=fbbtn>
+            <fb:login-button scope="public_profile,email,publish_actions" onlogin="checkLoginState();">Login to Facebook to Post Your Top Songs!</fb:login-button>
+            </div>
+
+            <div id=status>
+            </div>
+            <br>
+            <div id=postbtn>
+            <button onclick=post() class="btn btn-primary">Post Your Top Songs on Facebook!</button>
+            </div>
+        </div>
+    </body>
+</html>
